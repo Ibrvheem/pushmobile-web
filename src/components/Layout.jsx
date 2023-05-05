@@ -21,7 +21,7 @@ import {
   TableChartOutlined,
   VerifiedUserTwoTone,
 } from "@material-ui/icons";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useHistory, useLocation, useNavigate } from "react-router-dom";
 import React from "react";
 import { format } from "date-fns";
 
@@ -71,7 +71,7 @@ const useStyles = makeStyles(function (theme) {
 
 function Layout({ children }) {
   let location = useLocation();
-  let navigate = useNavigate();
+  let history = useHistory();
   const classes = useStyles();
   const menuItems = [
     {
@@ -82,7 +82,7 @@ function Layout({ children }) {
     {
       Text: "Requests",
       Icon: <TableChartOutlined color="primary" />,
-      Path: "/create",
+      Path: "/requests",
     },
   ];
   return (
@@ -125,7 +125,7 @@ function Layout({ children }) {
                       : classes.notActive
                   }
                   onClick={() => {
-                    navigate(menuItem.Path);
+                    history.push(menuItem.Path);
                   }}
                 >
                   <ListItemIcon>{menuItem.Icon}</ListItemIcon>

@@ -6,6 +6,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import React from "react";
+import { Link, useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme) => {
       gap: "3rem",
     },
     textField: {
-      width: "95rem",
+      width: "55rem",
     },
     button: {
       fontSize: "2rem",
@@ -38,6 +39,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 function Login() {
+  const history = useHistory();
   const classes = useStyles();
 
   return (
@@ -79,6 +81,9 @@ function Login() {
             color="secondary"
             fullWidth
             className={classes.button}
+            onClick={() => {
+              history.push("/users");
+            }}
           >
             Login
           </Button>

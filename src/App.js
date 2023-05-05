@@ -2,8 +2,9 @@ import { Drawer, ThemeProvider, createTheme } from "@material-ui/core";
 import "./App.css";
 import Login from "./pages/Login";
 import Layout from "./components/Layout";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import User from "./pages/User";
+import Request from "./pages/Request";
 
 const theme = createTheme({
   palette: {
@@ -40,14 +41,18 @@ function App() {
     <ThemeProvider theme={theme}>
       <Router>
         <div className="App">
-          <Layout>
-            <Routes>
-              <Route exact path="/users" element={<User />} />
-            </Routes>
-          </Layout>
+          <Switch>
+            <Route exact path="/" component={Login} />
+            <Route path="/">
+              <Layout>
+                <Switch>
+                  <Route exact path="/users" component={User} />
+                  <Route exact path="/requests" component={Request} />
+                </Switch>
+              </Layout>
+            </Route>
+          </Switch>
         </div>
-        {/* <AppDrawer /> */}
-        {/* <Login /> */}
       </Router>
     </ThemeProvider>
   );
