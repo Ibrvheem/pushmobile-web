@@ -143,7 +143,7 @@ function Layout({ children }) {
                   }}
                 >
                   {/* <ListItemIcon>{menuItem.Icon}</ListItemIcon> */}
-                  {menuItem.Text}
+                  <div>{menuItem.Text}</div>
                   <ListItemIcon>
                     {
                       <ChevronRight
