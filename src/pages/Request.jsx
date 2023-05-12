@@ -90,13 +90,104 @@ function Request({ detail }) {
 
   const [rows, setRows] = useState([]);
 
+  const countDeliveriesByStatus = (rows, status) => {
+    // Filter the rows by status first
+    const filteredRows = rows.filter(row => row.status === status);
+  
+    const currentTotal = filteredRows.length;
+  
+    // Filter the rows to get those created in the current month
+    const currentMonthRows = filteredRows.filter((row) => {
+      const createdDate = new Date(row.created_at);
+      const currentDate = new Date();
+      return (
+        createdDate.getMonth() === currentDate.getMonth() &&
+        createdDate.getFullYear() === currentDate.getFullYear()
+      );
+    });
+  
+    // Filter the rows to get those created in the previous month
+    const previousMonthRows = filteredRows.filter((row) => {
+      const createdDate = new Date(row.created_at);
+      const currentDate = new Date();
+      const previousMonthDate = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() - 1,
+        1
+      );
+      const endOfPreviousMonthDate = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        0
+      );
+      return (
+        createdDate >= previousMonthDate &&
+        createdDate <= endOfPreviousMonthDate
+      );
+    });
+  
+    const percentChange =
+      ((currentMonthRows.length - previousMonthRows.length) /
+        previousMonthRows.length) *
+      100;
+    const resultStatus = percentChange >= 0 ? "up" : "down";
+  
+    return { total: currentTotal, percentChange, status: resultStatus };
+  };
+  
+
+  const countTotalDeliveries = (rows) => {
+    const currentTotal = rows.length;
+  
+    // Filter the rows to get those created in the current month
+    const currentMonthRows = rows.filter((row) => {
+      const createdDate = new Date(row.created_at);
+      const currentDate = new Date();
+      return (
+        createdDate.getMonth() === currentDate.getMonth() &&
+        createdDate.getFullYear() === currentDate.getFullYear()
+      );
+    });
+  
+    // Filter the rows to get those created in the previous month
+    const previousMonthRows = rows.filter((row) => {
+      const createdDate = new Date(row.created_at);
+      const currentDate = new Date();
+      const previousMonthDate = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() - 1,
+        1
+      );
+      const endOfPreviousMonthDate = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        0
+      );
+      return (
+        createdDate >= previousMonthDate &&
+        createdDate <= endOfPreviousMonthDate
+      );
+    });
+  
+    const percentChange =
+      ((currentMonthRows.length - previousMonthRows.length) /
+        previousMonthRows.length) *
+      100;
+    const status = percentChange >= 0 ? "up" : "down";
+  
+    return { total: currentTotal, percentChange, status };
+  };
+  
+
+
+
   function handlePayment(id) {
     fetch("https://42f0-102-91-47-135.ngrok-free.app/delivery/payment/" + id, {
       method: "POST",
 
       headers: {
         Authorization:
-          "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODM5MTkyODQsImlhdCI6MTY4MzgzMjg4OCwic3ViIjoyLCJyb2xlIjoiYWRtaW4ifQ.PvEAPfmjxKJMSvdv3wYKPVg4pSrDjsPzoNmk3TYmog4",
+          "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODM5OTkyOTUsImlhdCI6MTY4MzkxOTU5Mywic3ViIjoyLCJyb2xlIjoiYWRtaW4ifQ.pOgfNurI8Dmi5HAjqAS5gCcIVGmkBcbD2w228bc1kys",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ amount }),
@@ -108,7 +199,7 @@ function Request({ detail }) {
     fetch("https://42f0-102-91-47-135.ngrok-free.app/deliveries", {
       headers: {
         Authorization:
-          "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODM5MTkyODQsImlhdCI6MTY4MzgzMjg4OCwic3ViIjoyLCJyb2xlIjoiYWRtaW4ifQ.PvEAPfmjxKJMSvdv3wYKPVg4pSrDjsPzoNmk3TYmog4",
+          "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODM5OTkyOTUsImlhdCI6MTY4MzkxOTU5Mywic3ViIjoyLCJyb2xlIjoiYWRtaW4ifQ.pOgfNurI8Dmi5HAjqAS5gCcIVGmkBcbD2w228bc1kys",
       },
     })
       .then((res) => res.json())
@@ -290,11 +381,11 @@ function Request({ detail }) {
               </div>
               <div className={classes.info}>
                 <Typography variant="body1">Total Deleveries</Typography>
-                <Typography variant="h1">5,424</Typography>
+                <Typography variant="h1">{countTotalDeliveries(rows)?.total}</Typography>
                 <Typography variant="body1" style={{ textAlign: "center" }}>
                   <span style={{ color: "#00AC4F", fontWeight: 700 }}>
                     {" "}
-                    <ArrowUpward /> 16%{" "}
+                    {countTotalDeliveries(rows)?.status === 'up' ? <><ArrowUpward /> {countTotalDeliveries(rows)?.percentChange}%{" "}</> : <><ArrowDownward /> {countTotalDeliveries(rows)?.percentChange}%{" "}</>}
                   </span>
                   this month
                 </Typography>
@@ -314,11 +405,11 @@ function Request({ detail }) {
               </div>
               <div className={classes.info}>
                 <Typography variant="body1">Pending Deliveries</Typography>
-                <Typography variant="h1">5,424</Typography>
+                <Typography variant="h1">{countDeliveriesByStatus(rows, 'ready').total}</Typography>
                 <Typography variant="body1">
                   <span style={{ color: "#DF0404", fontWeight: 700 }}>
                     {"  "}
-                    <ArrowDownward /> 16% {"  "}
+                    {countDeliveriesByStatus(rows, 'ready').status == 'up'? <><ArrowUpward /> {countDeliveriesByStatus(rows, 'ready').percentChange}% {"  "}</> : <><ArrowDownward /> {countDeliveriesByStatus(rows, 'pending').percentChange}% {"  "}</>}
                   </span>
                   this month
                 </Typography>
@@ -338,17 +429,17 @@ function Request({ detail }) {
               </div>
               <div className={classes.info}>
                 <Typography variant="body1">Completed Deliveries</Typography>
-                <Typography variant="h1">5,424</Typography>
+                <Typography variant="h1">{countDeliveriesByStatus(rows, 'delivered').total}</Typography>
                 <Typography variant="body1">
                   <span style={{ color: "#DF0404", fontWeight: 700 }}>
                     {"  "}
-                    <ArrowDownward /> 16% {"  "}
+                    {countDeliveriesByStatus(rows, 'ready').status == 'up'? <><ArrowUpward /> {countDeliveriesByStatus(rows, 'delivered').percentChange}% {"  "}</> : <><ArrowDownward /> {countDeliveriesByStatus(rows, 'delivered').percentChange}% {"  "}</>}
                   </span>
                   this month
                 </Typography>
               </div>
             </div>
-            <div className={classes.eachInfo}>
+            {/* <div className={classes.eachInfo}>
               <div className={classes.icon}>
                 <img
                   src="./Images/profile-2user.png"
@@ -373,7 +464,7 @@ function Request({ detail }) {
                   this month
                 </Typography>
               </div>
-            </div>
+            </div> */}
           </Card>
 
           <Card className={classes.overviewCard}>
