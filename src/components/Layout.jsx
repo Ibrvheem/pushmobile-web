@@ -15,6 +15,7 @@ import {
   AddCircleOutlineSharp,
   CheckBox,
   ChevronRight,
+  Dashboard,
   NotificationsNone,
   NotificationsNoneOutlined,
   SubjectOutlined,
@@ -25,7 +26,7 @@ import { useHistory, useLocation, useNavigate } from "react-router-dom";
 import React from "react";
 import { format } from "date-fns";
 
-const drawerWidth = 300;
+const drawerWidth = 240;
 const useStyles = makeStyles(function (theme) {
   return {
     page: {
@@ -40,15 +41,15 @@ const useStyles = makeStyles(function (theme) {
       width: drawerWidth,
     },
     notActive: {
-      width: "100%",
-      fontSize: "2rem",
+      width: "50%",
+      fontSize: "1.4rem",
       borderRadius: "1rem",
     },
     active: {
       backgroundColor: theme.palette.secondary.main,
       borderRadius: "1rem",
       color: "white",
-      fontSize: "2rem",
+      fontSize: "1.4rem",
       width: "100%",
       "&:hover": {
         backgroundColor: theme.palette.secondary.main,
@@ -60,9 +61,12 @@ const useStyles = makeStyles(function (theme) {
     appBar: {
       width: `calc(100% - ${drawerWidth}px)`,
     },
-    date: {
-      flexGrow: 1,
+    toolbar: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
     },
+
     avatar: {
       marginLeft: theme.spacing(2),
     },
@@ -74,6 +78,11 @@ function Layout({ children }) {
   let history = useHistory();
   const classes = useStyles();
   const menuItems = [
+    {
+      Text: "Dashboard",
+      Icon: <Dashboard color="primary" />,
+      Path: "/dashboard",
+    },
     {
       Text: "Users",
       Icon: <VerifiedUserTwoTone color="primary" />,
@@ -89,12 +98,17 @@ function Layout({ children }) {
     <div className={classes.page}>
       <AppBar color="textSecondary" className={classes.appBar} elevation={0}>
         <Toolbar className={classes.toolbar}>
-          <Typography variant="body2" className={classes.date}>
+          <div style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
+            <Avatar
+              src="/Images/profile--pic.jfif"
+              className={classes.avatar}
+            />
+            <Typography variant="h2">Hello Admin</Typography>
+          </div>
+          <Typography variant="body1" className={classes.date}>
             {" "}
-            Today is the {format(new Date(), "do MMMM Y")}
+            {format(new Date(), "do MMMM Y")}
           </Typography>
-          <Typography variant="body2">Ibrahim</Typography>
-          <Avatar src="/Images/profile--pic.jfif" className={classes.avatar} />
         </Toolbar>
       </AppBar>
       <Drawer
@@ -114,10 +128,10 @@ function Layout({ children }) {
                   key={menuItem.Text}
                   button
                   style={{
-                    fontSize: "2rem",
                     display: "flex",
+                    alignItems: "center",
                     justifyContent: "space-between",
-                    marginBottom: "2rem",
+                    width: "100%",
                   }}
                   className={
                     location.pathname == menuItem.Path
@@ -128,11 +142,12 @@ function Layout({ children }) {
                     history.push(menuItem.Path);
                   }}
                 >
-                  <ListItemIcon>{menuItem.Icon}</ListItemIcon>
+                  {/* <ListItemIcon>{menuItem.Icon}</ListItemIcon> */}
                   {menuItem.Text}
                   <ListItemIcon>
                     {
                       <ChevronRight
+                        // style={{ padding: 0 }}
                         className={
                           location.pathname == menuItem.Path
                             ? classes.active

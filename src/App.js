@@ -5,6 +5,7 @@ import Layout from "./components/Layout";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import User from "./pages/User";
 import Request from "./pages/Request";
+import Dashboard from "./pages/Dashboard";
 
 const theme = createTheme({
   palette: {
@@ -46,6 +47,7 @@ function App() {
             <Route path="/">
               <Layout>
                 <Switch>
+                  <Route exact path="/dashboard" component={Dashboard} />
                   <Route exact path="/users" component={User} />
                   <Route exact path="/requests" component={Request} />
                 </Switch>

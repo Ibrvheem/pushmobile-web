@@ -13,8 +13,8 @@ html {
 }
 .css-t89xny-MuiDataGrid-columnHeaderTitle {
   color: #b5b7c0 !important;
-  font-size: 1.4rem;
-  font-weight: 700 !important;
+  font-size: 1.3rem;
+  font-weight: 500 !important;
   letter-spacing: 0.1rem;
 }
 .css-6h1dhi-MuiDataGrid-root .MuiDataGrid-row {
@@ -29,3 +29,10 @@ html {
 .css-de9k3v-MuiDataGrid-selectedRowCount {
   display: none !important;
 }
+
+/* .css-6h1dhi-MuiDataGrid-root
+  .MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)
+  > .MuiDataGrid-cell:nth-child(8)
+  .MuiDataGrid-cellContent {
+  background-color: rebeccapurple;
+} */
