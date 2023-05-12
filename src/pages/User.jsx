@@ -115,8 +115,9 @@ function User() {
     // Determine the change status based on the percentage change
     const changeStatus = percentageChange > 0 ? "up" : "down";
   
-    return { total: currentMonthTotal, percentageChange, changeStatus };
+    return { total: currentMonthTotal, percentageChange: Math.abs(percentageChange), changeStatus };
   };
+  
   
 
   useEffect(() => {
@@ -219,11 +220,15 @@ function User() {
               <Typography variant="body1">Total Users</Typography>
               <Typography variant="h1">{getTotalUsers(rows).total}</Typography>
               <Typography variant="body1" style={{ textAlign: "center" }}>
-                <span style={{ color: "#00AC4F", fontWeight: 700 }}>
+                  {getTotalUsers(rows).changeStatus === 'up'? 
+                  <span style={{ color: "#00AC4F", fontWeight: 700 }}>
                   {" "}
-                  {getTotalUsers(rows).changeStatus === 'up'? <><ArrowUpward /> {getTotalUsers(rows).percentageChange}%{" "}</>:<><ArrowDownward /> {getTotalUsers(rows).percentageChange}%{" "}</>}
-                </span>
-                this month
+                  <><ArrowUpward /> {getTotalUsers(rows).percentageChange}%{" "}
+                this month</></span>:
+                <span style={{ color: "#DF0404", fontWeight: 700 }}>
+                {" "}
+                  <><ArrowDownward /> {getTotalUsers(rows).percentageChange}%{" "}this month</></span>
+                  }
               </Typography>
             </div>
           </div>
@@ -243,11 +248,15 @@ function User() {
               <Typography variant="body1">New Users</Typography>
               <Typography variant="h1">{getCurrentUsers(rows).total}</Typography>
               <Typography variant="body1" style={{ textAlign: "center" }}>
-                <span style={{ color: "#00AC4F", fontWeight: 700 }}>
+                  {
+                  getCurrentUsers(rows).changeStatus === 'up'? 
+                  <span style={{ color: "#00AC4F", fontWeight: 700 }}>
                   {" "}
-                  {getCurrentUsers(rows).changeStatus === 'up'? <><ArrowUpward /> {getCurrentUsers(rows).percentageChange}%{" "}</>:<><ArrowDownward /> {getCurrentUsers(rows).percentageChange}%{" "}</>}
-                </span>
-                this month
+                  <><ArrowUpward /> {getCurrentUsers(rows).percentageChange}%{" "}this month</></span>:
+                  <span style={{ color: "#DF0404", fontWeight: 700 }}>
+                  {" "}
+                  <><ArrowDownward /> {getCurrentUsers(rows).percentageChange}%{" "}this month</></span>
+                  }
               </Typography>
             </div>
           </div>

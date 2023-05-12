@@ -388,11 +388,15 @@ function Request({ detail }) {
                 <Typography variant="body1">Total Deleveries</Typography>
                 <Typography variant="h1">{countTotalDeliveries(rows)?.total}</Typography>
                 <Typography variant="body1" style={{ textAlign: "center" }}>
-                  <span style={{ color: "#00AC4F", fontWeight: 700 }}>
+                    {
+                    countTotalDeliveries(rows)?.status === 'up' ? 
+                    <span style={{ color: "#00AC4F", fontWeight: 700 }}>
                     {" "}
-                    {countTotalDeliveries(rows)?.status === 'up' ? <><ArrowUpward /> {countTotalDeliveries(rows)?.percentChange}%{" "}</> : <><ArrowDownward /> {countTotalDeliveries(rows)?.percentChange}%{" "}</>}
-                  </span>
-                  this month
+                    <><ArrowUpward /> {countTotalDeliveries(rows)?.percentChange}%{" "}</>this month</span>:
+                    <span style={{ color: "#DF0404", fontWeight: 700 }}>
+                    {" "}
+                    <><ArrowDownward /> {countTotalDeliveries(rows)?.percentChange}%{" "}</>this month</span>
+                     }
                 </Typography>
               </div>
             </div>
@@ -412,11 +416,15 @@ function Request({ detail }) {
                 <Typography variant="body1">Pending Deliveries</Typography>
                 <Typography variant="h1">{countDeliveriesByStatus(rows, 'ready').total}</Typography>
                 <Typography variant="body1">
-                  <span style={{ color: "#DF0404", fontWeight: 700 }}>
-                    {"  "}
-                    {countDeliveriesByStatus(rows, 'ready').status == 'up'? <><ArrowUpward /> {countDeliveriesByStatus(rows, 'ready').percentChange}% {"  "}</> : <><ArrowDownward /> {countDeliveriesByStatus(rows, 'pending').percentChange}% {"  "}</>}
-                  </span>
-                  this month
+                {
+                    countDeliveriesByStatus(rows, 'ready')?.status === 'up' ? 
+                    <span style={{ color: "#00AC4F", fontWeight: 700 }}>
+                    {" "}
+                    <><ArrowUpward /> {countDeliveriesByStatus(rows, 'ready')?.percentChange}%{" "}</>this month</span>:
+                    <span style={{ color: "#DF0404", fontWeight: 700 }}>
+                    {" "}
+                    <><ArrowDownward /> {countDeliveriesByStatus(rows, 'ready')?.percentChange}%{" "}</>this month</span>
+                     }
                 </Typography>
               </div>
             </div>
@@ -436,11 +444,15 @@ function Request({ detail }) {
                 <Typography variant="body1">Completed Deliveries</Typography>
                 <Typography variant="h1">{countDeliveriesByStatus(rows, 'delivered').total}</Typography>
                 <Typography variant="body1">
-                  <span style={{ color: "#DF0404", fontWeight: 700 }}>
-                    {"  "}
-                    {countDeliveriesByStatus(rows, 'ready').status == 'up'? <><ArrowUpward /> {countDeliveriesByStatus(rows, 'delivered').percentChange}% {"  "}</> : <><ArrowDownward /> {countDeliveriesByStatus(rows, 'delivered').percentChange}% {"  "}</>}
-                  </span>
-                  this month
+                {
+                    countDeliveriesByStatus(rows, 'delivered')?.status === 'up' ? 
+                    <span style={{ color: "#00AC4F", fontWeight: 700 }}>
+                    {" "}
+                    <><ArrowUpward /> {countDeliveriesByStatus(rows, 'delivered')?.percentChange}%{" "}</>this month</span>:
+                    <span style={{ color: "#DF0404", fontWeight: 700 }}>
+                    {" "}
+                    <><ArrowDownward /> {countDeliveriesByStatus(rows, 'delivered')?.percentChange}%{" "}</>this month</span>
+                     }
                 </Typography>
               </div>
             </div>
