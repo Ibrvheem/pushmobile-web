@@ -14,7 +14,7 @@ import {
 } from "@material-ui/icons";
 import { borderRadius, width } from "@mui/system";
 import { DataGrid } from "@mui/x-data-grid";
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -65,19 +65,76 @@ const useStyles = makeStyles((theme) => {
 
 function User() {
   const classes = useStyles();
+  const [rows, setRows] = useState([])
+
+  // const getTotalUsers = (data)=>{
+  //   // data = [{"address": "U/Dosa Kaduna","bus_stop": "SMC","created_at": "2023-04-30T21:23:14.456268","id": 9,"name": "Jamilu","phone_number": "+2348028752833","updated_at": "2023-04-30T21:26:33.212878"}]
+  //   // write code to find total users, percentageChange from last month to current month and the change status whether it went up or down
+  //   return {total, percentageChange, changeStatus}
+  // }
+
+  const getTotalUsers = (data) => {
+    const currentMonthTotal = data.length;
+  
+    // Filter the data to get only the users created in the previous month
+    const previousMonthData = data.filter(
+      (user) => new Date(user.created_at).getMonth() === new Date().getMonth() - 1
+    );
+  
+    // Calculate the total number of users in the previous month
+    const previousMonthTotal = previousMonthData.length;
+  
+    // Calculate the percentage change from the previous month to the current month
+    const percentageChange = (((currentMonthTotal - previousMonthTotal) / previousMonthTotal) * 100).toFixed(1);;
+  
+    // Determine the change status based on the percentage change
+    const changeStatus = percentageChange > 0 ? "up" : "down";
+  
+    return { total: currentMonthTotal, percentageChange, changeStatus };
+  };
+  
+  const getCurrentUsers = (data) => {
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+    const currentMonthData = data.filter(
+      (user) => new Date(user.created_at).getMonth() === currentMonth && new Date(user.created_at).getFullYear() === currentYear
+    );
+    const currentMonthTotal = currentMonthData.length;
+  
+    // Filter the data to get only the users created in the previous month
+    const previousMonthData = data.filter(
+      (user) => new Date(user.created_at).getMonth() === currentMonth - 1 && new Date(user.created_at).getFullYear() === currentYear
+    );
+  
+    // Calculate the total number of users in the previous month
+    const previousMonthTotal = previousMonthData.length;
+  
+    // Calculate the percentage change from the previous month to the current month
+    const percentageChange = (((currentMonthTotal - previousMonthTotal) / previousMonthTotal) * 100).toFixed(1);
+  
+    // Determine the change status based on the percentage change
+    const changeStatus = percentageChange > 0 ? "up" : "down";
+  
+    return { total: currentMonthTotal, percentageChange, changeStatus };
+  };
+  
+
+  useEffect(() => {
+    fetch("https://42f0-102-91-47-135.ngrok-free.app/customers", {
+      headers: {
+        Authorization:
+          "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODM5OTkyOTUsImlhdCI6MTY4MzkxOTU5Mywic3ViIjoyLCJyb2xlIjoiYWRtaW4ifQ.pOgfNurI8Dmi5HAjqAS5gCcIVGmkBcbD2w228bc1kys",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setRows(data));
+  }, []);
+
   const columns = [
-    {
-      field: "fullName",
-      headerName: "Full Name",
-      description: "This column has a value getter and is not sortable.",
-      sortable: false,
-      width: 350,
-      valueGetter: (params) =>
-        `${params.row.firstName || ""} ${params.row.lastName || ""}`,
-    },
-    { field: "id", headerName: "Phone Number", width: 200 },
+    // { field: "id", headerName: "ID", width: 200 },
+    { field: "name", headerName: "Full Name", sortable: false, width: 350 },
+    { field: "phone_number", headerName: "Phone Number", width: 200 },
     { field: "address", headerName: "Address", width: 200 },
-    { field: "email", headerName: "Email", width: 200 },
     // {
     //   field: "age",
     //   headerName: "Age",
@@ -86,62 +143,62 @@ function User() {
     // },
   ];
 
-  const rows = [
-    {
-      id: 2,
-      lastName: "Lannister",
-      firstName: "Cersei",
-      email: "i.aliyu019@gmail.com",
-    },
-    {
-      id: 3,
-      lastName: "Lannister",
-      firstName: "Jaime",
-      email: "i.aliyu019@gmail.com",
-    },
-    {
-      id: 1,
-      lastName: "Snow",
-      firstName: "Jon",
-      email: "i.aliyu019@gmail.com",
-    },
-    {
-      id: 4,
-      lastName: "Stark",
-      firstName: "Arya",
-      email: "i.aliyu019@gmail.com",
-    },
-    {
-      id: 5,
-      lastName: "Targaryen",
-      firstName: "Daenerys",
-      email: "i.aliyu019@gmail.com",
-    },
-    {
-      id: 6,
-      lastName: "Melisandre",
-      firstName: null,
-      email: "i.aliyu019@gmail.com",
-    },
-    {
-      id: 7,
-      lastName: "Clifford",
-      firstName: "Ferrara",
-      email: "i.aliyu019@gmail.com",
-    },
-    {
-      id: 8,
-      lastName: "Frances",
-      firstName: "Rossini",
-      email: "i.aliyu019@gmail.com",
-    },
-    {
-      id: 9,
-      lastName: "Roxie",
-      firstName: "Harvey",
-      email: "i.aliyu019@gmail.com",
-    },
-  ];
+  // const rows = [
+  //   {
+  //     id: 2,
+  //     lastName: "Lannister",
+  //     firstName: "Cersei",
+  //     email: "i.aliyu019@gmail.com",
+  //   },
+  //   {
+  //     id: 3,
+  //     lastName: "Lannister",
+  //     firstName: "Jaime",
+  //     email: "i.aliyu019@gmail.com",
+  //   },
+  //   {
+  //     id: 1,
+  //     lastName: "Snow",
+  //     firstName: "Jon",
+  //     email: "i.aliyu019@gmail.com",
+  //   },
+  //   {
+  //     id: 4,
+  //     lastName: "Stark",
+  //     firstName: "Arya",
+  //     email: "i.aliyu019@gmail.com",
+  //   },
+  //   {
+  //     id: 5,
+  //     lastName: "Targaryen",
+  //     firstName: "Daenerys",
+  //     email: "i.aliyu019@gmail.com",
+  //   },
+  //   {
+  //     id: 6,
+  //     lastName: "Melisandre",
+  //     firstName: null,
+  //     email: "i.aliyu019@gmail.com",
+  //   },
+  //   {
+  //     id: 7,
+  //     lastName: "Clifford",
+  //     firstName: "Ferrara",
+  //     email: "i.aliyu019@gmail.com",
+  //   },
+  //   {
+  //     id: 8,
+  //     lastName: "Frances",
+  //     firstName: "Rossini",
+  //     email: "i.aliyu019@gmail.com",
+  //   },
+  //   {
+  //     id: 9,
+  //     lastName: "Roxie",
+  //     firstName: "Harvey",
+  //     email: "i.aliyu019@gmail.com",
+  //   },
+  // ];
   return (
     <div className={classes.users}>
       <Container>
@@ -160,11 +217,11 @@ function User() {
             </div>
             <div className={classes.info}>
               <Typography variant="body1">Total Users</Typography>
-              <Typography variant="h1">5,424</Typography>
+              <Typography variant="h1">{getTotalUsers(rows).total}</Typography>
               <Typography variant="body1" style={{ textAlign: "center" }}>
                 <span style={{ color: "#00AC4F", fontWeight: 700 }}>
                   {" "}
-                  <ArrowUpward /> 16%{" "}
+                  {getTotalUsers(rows).changeStatus === 'up'? <><ArrowUpward /> {getTotalUsers(rows).percentageChange}%{" "}</>:<><ArrowDownward /> {getTotalUsers(rows).percentageChange}%{" "}</>}
                 </span>
                 this month
               </Typography>
@@ -184,11 +241,11 @@ function User() {
             </div>
             <div className={classes.info}>
               <Typography variant="body1">New Users</Typography>
-              <Typography variant="h1">5,424</Typography>
-              <Typography variant="body1">
-                <span style={{ color: "#DF0404", fontWeight: 700 }}>
-                  {"  "}
-                  <ArrowDownward /> 16% {"  "}
+              <Typography variant="h1">{getCurrentUsers(rows).total}</Typography>
+              <Typography variant="body1" style={{ textAlign: "center" }}>
+                <span style={{ color: "#00AC4F", fontWeight: 700 }}>
+                  {" "}
+                  {getCurrentUsers(rows).changeStatus === 'up'? <><ArrowUpward /> {getCurrentUsers(rows).percentageChange}%{" "}</>:<><ArrowDownward /> {getCurrentUsers(rows).percentageChange}%{" "}</>}
                 </span>
                 this month
               </Typography>

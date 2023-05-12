@@ -207,7 +207,7 @@ function Request({ detail }) {
   }, []);
 
   const columns = [
-    { field: "id", headerName: "ID", width: 50 },
+    // { field: "id", headerName: "ID", width: 50 },
     {
       field: "pickup_name",
       headerName: "Sender",
