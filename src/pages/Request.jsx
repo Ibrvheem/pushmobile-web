@@ -97,9 +97,9 @@ function Request({ detail }) {
     const currentTotal = filteredRows.length;
   
     // Filter the rows to get those created in the current month
-    const currentMonthRows = filteredRows.filter((row) => {
+    const currentDate = new Date();
+    const currentMonthRows = filteredRows.filter(row => {
       const createdDate = new Date(row.created_at);
-      const currentDate = new Date();
       return (
         createdDate.getMonth() === currentDate.getMonth() &&
         createdDate.getFullYear() === currentDate.getFullYear()
@@ -107,9 +107,8 @@ function Request({ detail }) {
     });
   
     // Filter the rows to get those created in the previous month
-    const previousMonthRows = filteredRows.filter((row) => {
+    const previousMonthRows = filteredRows.filter(row => {
       const createdDate = new Date(row.created_at);
-      const currentDate = new Date();
       const previousMonthDate = new Date(
         currentDate.getFullYear(),
         currentDate.getMonth() - 1,
@@ -126,14 +125,16 @@ function Request({ detail }) {
       );
     });
   
-    const percentChange =
-      ((currentMonthRows.length - previousMonthRows.length) /
-        previousMonthRows.length) *
-      100;
+    const previousMonthCount = previousMonthRows.length;
+    const percentChange = previousMonthCount !== 0
+      ? ((currentMonthRows.length - previousMonthCount) / previousMonthCount) * 100
+      : currentMonthRows.length > 0 ? Infinity : 0;
+  
     const resultStatus = percentChange >= 0 ? "up" : "down";
   
     return { total: currentTotal, percentChange, status: resultStatus };
   };
+  
   
 
   const countTotalDeliveries = (rows) => {
@@ -169,14 +170,18 @@ function Request({ detail }) {
       );
     });
   
+    const previousMonthCount = previousMonthRows.length;
     const percentChange =
-      ((currentMonthRows.length - previousMonthRows.length) /
-        previousMonthRows.length) *
-      100;
-    const status = percentChange >= 0 ? "up" : "down";
+      previousMonthCount > 0
+        ? ((currentMonthRows.length - previousMonthCount) / previousMonthCount) *
+          100
+        : null;
+    const status = percentChange !== null && percentChange >= 0 ? "up" : "down";
   
     return { total: currentTotal, percentChange, status };
   };
+  
+  
   
 
 
