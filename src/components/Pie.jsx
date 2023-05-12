@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import Chart from "chart.js/auto";
 
-export default function Pie({ data }) {
+export default function Pie({ data, title, label }) {
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
 
@@ -19,7 +19,7 @@ export default function Pie({ data }) {
         labels: data.labels,
         datasets: [
           {
-            label: "Pie Chart",
+            label: label,
             data: data.values,
             backgroundColor: data.backgroundColor,
             padding: 0,
@@ -38,7 +38,7 @@ export default function Pie({ data }) {
             display: true,
             position: "bottom",
 
-            text: data.text,
+            text: title,
           },
         },
       },

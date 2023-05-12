@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import Chart from "chart.js/auto";
 
-export default function Histogram({ data }) {
+export default function Histogram({ data, title }) {
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
 
@@ -19,7 +19,7 @@ export default function Histogram({ data }) {
         labels: data.labels,
         datasets: [
           {
-            label: "Histogram",
+            label: title,
             data: data.values,
             backgroundColor: data.values.map((value, index) => {
               if (index % 2 == 0) {
