@@ -65,7 +65,8 @@ const useStyles = makeStyles((theme) => {
 
 function User() {
   const classes = useStyles();
-  const [rows, setRows] = useState([])
+  const [rows, setRows] = useState([]);
+  const user = JSON.parse(localStorage.getItem("user"));
 
   // const getTotalUsers = (data)=>{
   //   // data = [{"address": "U/Dosa Kaduna","bus_stop": "SMC","created_at": "2023-04-30T21:23:14.456268","id": 9,"name": "Jamilu","phone_number": "+2348028752833","updated_at": "2023-04-30T21:26:33.212878"}]
@@ -75,56 +76,68 @@ function User() {
 
   const getTotalUsers = (data) => {
     const currentMonthTotal = data.length;
-  
+
     // Filter the data to get only the users created in the previous month
     const previousMonthData = data.filter(
-      (user) => new Date(user.created_at).getMonth() === new Date().getMonth() - 1
+      (user) =>
+        new Date(user.created_at).getMonth() === new Date().getMonth() - 1
     );
-  
+
     // Calculate the total number of users in the previous month
     const previousMonthTotal = previousMonthData.length;
-  
+
     // Calculate the percentage change from the previous month to the current month
-    const percentageChange = (((currentMonthTotal - previousMonthTotal) / previousMonthTotal) * 100).toFixed(1);;
-  
+    const percentageChange = (
+      ((currentMonthTotal - previousMonthTotal) / previousMonthTotal) *
+      100
+    ).toFixed(1);
+
     // Determine the change status based on the percentage change
     const changeStatus = percentageChange > 0 ? "up" : "down";
-  
+
     return { total: currentMonthTotal, percentageChange, changeStatus };
   };
-  
+
   const getCurrentUsers = (data) => {
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
     const currentMonthData = data.filter(
-      (user) => new Date(user.created_at).getMonth() === currentMonth && new Date(user.created_at).getFullYear() === currentYear
+      (user) =>
+        new Date(user.created_at).getMonth() === currentMonth &&
+        new Date(user.created_at).getFullYear() === currentYear
     );
     const currentMonthTotal = currentMonthData.length;
-  
+
     // Filter the data to get only the users created in the previous month
     const previousMonthData = data.filter(
-      (user) => new Date(user.created_at).getMonth() === currentMonth - 1 && new Date(user.created_at).getFullYear() === currentYear
+      (user) =>
+        new Date(user.created_at).getMonth() === currentMonth - 1 &&
+        new Date(user.created_at).getFullYear() === currentYear
     );
-  
+
     // Calculate the total number of users in the previous month
     const previousMonthTotal = previousMonthData.length;
-  
+
     // Calculate the percentage change from the previous month to the current month
-    const percentageChange = (((currentMonthTotal - previousMonthTotal) / previousMonthTotal) * 100).toFixed(1);
-  
+    const percentageChange = (
+      ((currentMonthTotal - previousMonthTotal) / previousMonthTotal) *
+      100
+    ).toFixed(1);
+
     // Determine the change status based on the percentage change
     const changeStatus = percentageChange > 0 ? "up" : "down";
-  
-    return { total: currentMonthTotal, percentageChange: Math.abs(percentageChange), changeStatus };
+
+    return {
+      total: currentMonthTotal,
+      percentageChange: Math.abs(percentageChange),
+      changeStatus,
+    };
   };
-  
-  
 
   useEffect(() => {
-    fetch("https://42f0-102-91-47-135.ngrok-free.app/customers", {
+    fetch(`${process.env.REACT_APP_API_URL}/customers`, {
       headers: {
-        Authorization:
-          "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODM5OTkyOTUsImlhdCI6MTY4MzkxOTU5Mywic3ViIjoyLCJyb2xlIjoiYWRtaW4ifQ.pOgfNurI8Dmi5HAjqAS5gCcIVGmkBcbD2w228bc1kys",
+        Authorization: "Bearer " + user.token,
       },
     })
       .then((res) => res.json())
@@ -144,62 +157,6 @@ function User() {
     // },
   ];
 
-  // const rows = [
-  //   {
-  //     id: 2,
-  //     lastName: "Lannister",
-  //     firstName: "Cersei",
-  //     email: "i.aliyu019@gmail.com",
-  //   },
-  //   {
-  //     id: 3,
-  //     lastName: "Lannister",
-  //     firstName: "Jaime",
-  //     email: "i.aliyu019@gmail.com",
-  //   },
-  //   {
-  //     id: 1,
-  //     lastName: "Snow",
-  //     firstName: "Jon",
-  //     email: "i.aliyu019@gmail.com",
-  //   },
-  //   {
-  //     id: 4,
-  //     lastName: "Stark",
-  //     firstName: "Arya",
-  //     email: "i.aliyu019@gmail.com",
-  //   },
-  //   {
-  //     id: 5,
-  //     lastName: "Targaryen",
-  //     firstName: "Daenerys",
-  //     email: "i.aliyu019@gmail.com",
-  //   },
-  //   {
-  //     id: 6,
-  //     lastName: "Melisandre",
-  //     firstName: null,
-  //     email: "i.aliyu019@gmail.com",
-  //   },
-  //   {
-  //     id: 7,
-  //     lastName: "Clifford",
-  //     firstName: "Ferrara",
-  //     email: "i.aliyu019@gmail.com",
-  //   },
-  //   {
-  //     id: 8,
-  //     lastName: "Frances",
-  //     firstName: "Rossini",
-  //     email: "i.aliyu019@gmail.com",
-  //   },
-  //   {
-  //     id: 9,
-  //     lastName: "Roxie",
-  //     firstName: "Harvey",
-  //     email: "i.aliyu019@gmail.com",
-  //   },
-  // ];
   return (
     <div className={classes.users}>
       <Container>
@@ -220,15 +177,23 @@ function User() {
               <Typography variant="body1">Total Users</Typography>
               <Typography variant="h1">{getTotalUsers(rows).total}</Typography>
               <Typography variant="body1" style={{ textAlign: "center" }}>
-                  {getTotalUsers(rows).changeStatus === 'up'? 
+                {getTotalUsers(rows).changeStatus === "up" ? (
                   <span style={{ color: "#00AC4F", fontWeight: 700 }}>
-                  {" "}
-                  <><ArrowUpward /> {getTotalUsers(rows).percentageChange}%{" "}
-                this month</></span>:
-                <span style={{ color: "#DF0404", fontWeight: 700 }}>
-                {" "}
-                  <><ArrowDownward /> {getTotalUsers(rows).percentageChange}%{" "}this month</></span>
-                  }
+                    {" "}
+                    <>
+                      <ArrowUpward /> {getTotalUsers(rows).percentageChange}%{" "}
+                      this month
+                    </>
+                  </span>
+                ) : (
+                  <span style={{ color: "#DF0404", fontWeight: 700 }}>
+                    {" "}
+                    <>
+                      <ArrowDownward /> {getTotalUsers(rows).percentageChange}%{" "}
+                      this month
+                    </>
+                  </span>
+                )}
               </Typography>
             </div>
           </div>
@@ -246,17 +211,27 @@ function User() {
             </div>
             <div className={classes.info}>
               <Typography variant="body1">New Users</Typography>
-              <Typography variant="h1">{getCurrentUsers(rows).total}</Typography>
+              <Typography variant="h1">
+                {getCurrentUsers(rows).total}
+              </Typography>
               <Typography variant="body1" style={{ textAlign: "center" }}>
-                  {
-                  getCurrentUsers(rows).changeStatus === 'up'? 
+                {getCurrentUsers(rows).changeStatus === "up" ? (
                   <span style={{ color: "#00AC4F", fontWeight: 700 }}>
-                  {" "}
-                  <><ArrowUpward /> {getCurrentUsers(rows).percentageChange}%{" "}this month</></span>:
+                    {" "}
+                    <>
+                      <ArrowUpward /> {getCurrentUsers(rows).percentageChange}%{" "}
+                      this month
+                    </>
+                  </span>
+                ) : (
                   <span style={{ color: "#DF0404", fontWeight: 700 }}>
-                  {" "}
-                  <><ArrowDownward /> {getCurrentUsers(rows).percentageChange}%{" "}this month</></span>
-                  }
+                    {" "}
+                    <>
+                      <ArrowDownward /> {getCurrentUsers(rows).percentageChange}
+                      % this month
+                    </>
+                  </span>
+                )}
               </Typography>
             </div>
           </div>

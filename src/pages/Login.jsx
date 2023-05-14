@@ -5,7 +5,7 @@ import {
   Typography,
   makeStyles,
 } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => {
@@ -41,6 +41,30 @@ const useStyles = makeStyles((theme) => {
 function Login() {
   const history = useHistory();
   const classes = useStyles();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  function handleLogin() {
+    fetch("https://42f0-102-91-47-135.ngrok-free.app/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    }).then((res) => {
+      res.json().then((data) => {
+        if (res.ok) {
+          localStorage.setItem("user", JSON.stringify(data));
+          history.push("/dashboard");
+        } else {
+          alert("wrong credentials");
+        }
+      });
+    });
+  }
 
   return (
     <div className={classes.login}>
@@ -56,6 +80,9 @@ function Login() {
             variant="outlined"
             color="textSecondary"
             label="Email"
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
             inputProps={{
               style: { fontSize: "2rem" },
             }}
@@ -68,6 +95,9 @@ function Login() {
             variant="outlined"
             color="textSecondary"
             label="Password"
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
             inputProps={{
               style: { fontSize: "2rem" },
             }}
@@ -81,9 +111,7 @@ function Login() {
             color="secondary"
             fullWidth
             className={classes.button}
-            onClick={() => {
-              history.push("/users");
-            }}
+            onClick={handleLogin}
           >
             Login
           </Button>
