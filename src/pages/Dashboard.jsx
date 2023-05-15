@@ -28,7 +28,7 @@ function Dashboard(props) {
     const values = new Array(12).fill(0);
 
     // loop through the data array and count the occurrences of each month
-    data.forEach((datum) => {
+    data?.forEach((datum) => {
       const month = new Date(datum.created_at).toLocaleString("default", {
         month: "short",
       });
@@ -48,7 +48,7 @@ function Dashboard(props) {
     let values = [];
 
     // Count the number of occurrences of each category
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < data?.length; i++) {
       const itemCategory = data[i].item_category;
       if (categoryCounts[itemCategory]) {
         categoryCounts[itemCategory]++;
@@ -84,7 +84,7 @@ function Dashboard(props) {
 
   const getRevenueDistributionByItem = (data) => {
     const revenueByCategory = {};
-    data.forEach((item) => {
+    data?.forEach((item) => {
       const category = item.item_category;
       if (revenueByCategory[category]) {
         revenueByCategory[category] += item.fees;
@@ -119,7 +119,7 @@ function Dashboard(props) {
       "rgba(255, 92, 93, .5)",
     ];
     const count = {};
-    data.forEach((item) => {
+    data?.forEach((item) => {
       const phoneNumber = item.pickup_phone_number;
       const network = Object.keys(labelFinder).find((key) =>
         labelFinder[key].some((prefix) => phoneNumber.startsWith(prefix))
@@ -182,8 +182,9 @@ function Dashboard(props) {
         if (res.status == 401) {
           history.push("/");
         }
+        return res;
       })
-      .then((res) => res.json())
+      .then((res) => res?.json())
       .then((data) => setData(data));
   }, []);
   return (
