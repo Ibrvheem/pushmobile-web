@@ -17,6 +17,8 @@ import {
 import { padding, width } from "@mui/system";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { ScaleLoader } from "react-spinners";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -81,16 +83,17 @@ function Request({ detail }) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [amount, setAmount] = useState("");
+  const history = useHistory();
   let user = JSON.parse(localStorage.getItem("user"));
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [rows, setRows] = useState([]);
+  const [loader, setLoader] = useState(false);
   // console.log(JSON.parse(data).token);
   const handleOpen = (row) => {
     setSelectedRow(row);
     setOpen(true);
   };
   const handleClose = () => setOpen(false);
-  const [selectedRow, setSelectedRow] = useState(null);
-
-  const [rows, setRows] = useState([]);
 
   const countDeliveriesByStatus = (rows, status) => {
     // Filter the rows by status first
@@ -188,6 +191,7 @@ function Request({ detail }) {
   };
 
   function handlePayment(id) {
+    setLoader(true);
     fetch(`${process.env.REACT_APP_API_URL}/delivery/payment/${id}`, {
       method: "POST",
       headers: {
@@ -195,6 +199,16 @@ function Request({ detail }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ amount }),
+    }).then((res) => {
+      if (res.ok) {
+        // alert("Invoice Sent");
+        handleClose();
+        setLoader(false);
+        window.location.reload();
+      } else if (res.status === "400") {
+        alert("Invoice Not Sent");
+        setLoader(false);
+      }
     });
   }
 
@@ -205,12 +219,18 @@ function Request({ detail }) {
       },
     })
       .then((res) => {
-        if (res.status == 401) {
+        if (res.status === 401) {
           history.push("/");
+        } else if (!res.ok) {
+          throw new Error("Request failed with status " + res.status);
         }
+        return res.json();
       })
-      .then((res) => res.json())
-      .then((data) => setRows(data));
+      .then((data) => setRows(data))
+      .catch((error) => {
+        // Handle error
+        console.error(error);
+      });
   }, []);
 
   const columns = [
@@ -362,7 +382,11 @@ function Request({ detail }) {
                         fontSize: "1.4rem",
                       }}
                     >
-                      Send
+                      {loader ? (
+                        <ScaleLoader height={10} color="#ffffff" />
+                      ) : (
+                        "Send"
+                      )}
                     </Button>
                   ),
                 }}
