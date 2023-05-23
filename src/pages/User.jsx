@@ -146,6 +146,7 @@ function User() {
 
   const columns = [
     // { field: "id", headerName: "ID", width: 200 },
+    { field: "created_at", headerName: "Timestamp", sortable: true, width: 350 },
     { field: "name", headerName: "Full Name", sortable: false, width: 350 },
     { field: "phone_number", headerName: "Phone Number", width: 200 },
     { field: "address", headerName: "Address", width: 200 },
