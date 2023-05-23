@@ -122,7 +122,7 @@ function Dashboard(props) {
     data?.forEach((item) => {
       const phoneNumber = item.pickup_phone_number;
       const network = Object.keys(labelFinder).find((key) =>
-        labelFinder[key].some((prefix) => phoneNumber.startsWith(prefix))
+        labelFinder[key].some((prefix) => phoneNumber?.startsWith(prefix))
       );
       if (network) {
         count[network] = count[network] ? count[network] + 1 : 1;
