@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Layout from "./components/Layout";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import User from "./pages/User";
+import Agent from "./pages/Agent";
 import Request from "./pages/Request";
 import Dashboard from "./pages/Dashboard";
 
@@ -49,6 +50,7 @@ function App() {
                 <Switch>
                   <Route exact path="/dashboard" component={Dashboard} />
                   <Route exact path="/users" component={User} />
+                  <Route exact path="/agents" component={Agent} />
                   <Route exact path="/requests" component={Request} />
                 </Switch>
               </Layout>

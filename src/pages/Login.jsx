@@ -45,7 +45,7 @@ function Login() {
   const [password, setPassword] = useState("");
 
   function handleLogin() {
-    fetch("https://42f0-102-91-47-135.ngrok-free.app/login", {
+    fetch(process.env.REACT_APP_API_URL+"/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -89,6 +89,11 @@ function Layout({ children }) {
       Path: "/users",
     },
     {
+      Text: "Agents",
+      Icon: <VerifiedUserTwoTone color="primary" />,
+      Path: "/agents",
+    },
+    {
       Text: "Requests",
       Icon: <TableChartOutlined color="primary" />,
       Path: "/requests",

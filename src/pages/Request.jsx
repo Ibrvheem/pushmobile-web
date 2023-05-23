@@ -236,6 +236,15 @@ function Request({ detail }) {
   const columns = [
     // { field: "id", headerName: "ID", width: 50 },
     {
+      field: "created_at",
+      headerName: "Timestamp",
+      description: "This column has a value getter",
+      sortable: true,
+
+      // flex: 1,
+      width: 170,
+    },
+    {
       field: "pickup_name",
       headerName: "Sender",
       description: "This column has a value getter and is not sortable.",
@@ -245,8 +254,25 @@ function Request({ detail }) {
       width: 170,
     },
     {
+      field: "pickup",
+      headerName: "Pickup Address",
+      description: "This column has a value getter and is not sortable.",
+      sortable: false,
+
+      // flex: 1,
+      width: 170,
+    },
+    {
       field: "delivery_name",
       headerName: "Receiver",
+      description: "This column has a value getter and is not sortable.",
+      sortable: false,
+      // flex: 1,
+      width: 170,
+    },
+    {
+      field: "delivery",
+      headerName: "Receiver Address",
       description: "This column has a value getter and is not sortable.",
       sortable: false,
       // flex: 1,
@@ -559,6 +585,7 @@ function Request({ detail }) {
             <DataGrid
               rows={rows}
               columns={columns}
+              sx={{ overflowX: 'scroll' }}
               // onCellClick={(params) => handleOpen(params.row)}
               style={{ fontSize: "1.4rem", padding: "0rem 3rem" }}
               initialState={{
