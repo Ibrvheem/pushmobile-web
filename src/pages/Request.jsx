@@ -4,6 +4,7 @@ import {
   Card,
   Container,
   IconButton,
+  InputAdornment,
   Modal,
   TextField,
   Typography,
@@ -13,12 +14,21 @@ import {
   ArrowDownward,
   ArrowDownwardOutlined,
   ArrowUpward,
+  SearchRounded,
 } from "@material-ui/icons";
 import { padding, width } from "@mui/system";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { ScaleLoader } from "react-spinners";
+
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -76,6 +86,12 @@ const useStyles = makeStyles((theme) => {
       justifyContent: "center",
       flexDirection: "column",
     },
+    tableHeader: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: "0 3rem",
+    },
   };
 });
 
@@ -86,8 +102,11 @@ function Request({ detail }) {
   const history = useHistory();
   let user = JSON.parse(localStorage.getItem("user"));
   const [selectedRow, setSelectedRow] = useState(null);
+  const [data, setData] = useState([]);
   const [rows, setRows] = useState([]);
   const [loader, setLoader] = useState(false);
+
+  const [searchTerm, setSearchTerm] = useState('')
   // console.log(JSON.parse(data).token);
   const handleOpen = (row) => {
     setSelectedRow(row);
@@ -226,12 +245,18 @@ function Request({ detail }) {
         }
         return res.json();
       })
-      .then((data) => setRows(data))
+      .then((data) => {setRows(data); setData(data)})
       .catch((error) => {
         // Handle error
         console.error(error);
       });
   }, []);
+
+  useEffect(()=>{
+
+    setRows(data.filter(d=>d.item_category?.toLowerCase()?.includes(searchTerm.toLowerCase()) || d.pickup?.toLowerCase()?.includes(searchTerm.toLowerCase()) || d.delivery?.toLowerCase()?.includes(searchTerm.toLowerCase()) || d.vehicle?.toLowerCase()?.includes(searchTerm.toLowerCase())))
+
+  }, [searchTerm])
 
   const columns = [
     // { field: "id", headerName: "ID", width: 50 },
@@ -582,7 +607,7 @@ function Request({ detail }) {
           </Card>
 
           <Card className={classes.overviewCard}>
-            <DataGrid
+            {/* <DataGrid
               rows={rows}
               columns={columns}
               sx={{ overflowX: 'scroll' }}
@@ -594,7 +619,89 @@ function Request({ detail }) {
                 },
               }}
               pageSizeOptions={[5, 20]}
-            />
+            /> */}
+
+    <TableContainer component={Paper}>
+    <div className={classes.tableHeader}>
+        <Typography variant="h2">All Requests</Typography>
+        <TextField
+          variant="outlined"
+          placeholder="Search"
+          value={searchTerm}
+          onChange={(e)=>{setSearchTerm(e.target.value)}}
+          InputProps={{
+            style: {
+              borderRadius: "3rem",
+            },
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchRounded style={{ fontSize: "2rem" }} />
+              </InputAdornment>
+            ),
+          }}
+        />
+      </div>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Timestamp</TableCell>
+            <TableCell align="right">Item</TableCell>
+            <TableCell align="right">Unit</TableCell>
+            <TableCell align="right">From</TableCell>
+            <TableCell align="right">To</TableCell>
+            <TableCell align="right">Vehicle</TableCell>
+            <TableCell align="right">Status</TableCell>
+            <TableCell align="right">Payment</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => (
+            <TableRow
+              key={row.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                {row.created_at}
+              </TableCell>
+              <TableCell align="right">{row.item_category}</TableCell>
+              <TableCell align="right">{row.unit}</TableCell>
+              <TableCell align="right">{row.pickup}</TableCell>
+              <TableCell align="right">{row.delivery}</TableCell>
+              <TableCell align="right">{row.vehicle}</TableCell>
+              <TableCell align="right">
+                {row.status == "ready" ? (
+                <img src="./Images/not-delivered.png" style={{ width: "3rem" }} />
+                ) : row.status == "transit" ? (
+                <img src="./Images/delivery.png" style={{ width: "3rem" }} />
+                ) : (
+                <img src="./Images/delivered.png" style={{ width: "3rem" }} />
+                )}
+              </TableCell>
+              <TableCell align="right">
+                <Button
+                  onClick={row.payment_status == "pending" ? () => handleOpen(row) : null}
+                  style={{
+                    fontSize: "1.2rem",
+                    border: ".1rem solid",
+                    borderColor: row.payment_status == "pending" ? "#DF0404" : "#008767",
+                    backgroundColor:
+                    row.payment_status == "pending" ? "#FFC5C5" : "rgba(22, 192, 152, .5)",
+                    color: row.payment_status == "pending" ? "#DF0404" : "#008767",
+                    borderRadius: "1rem",
+                    // width: "12rem",
+                    textAlign: "center",
+                    padding: "1rem",
+                  }}
+                >
+                  {row.payment_status}
+              </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+
           </Card>
         </Container>
       </div>
