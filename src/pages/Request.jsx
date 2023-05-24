@@ -114,13 +114,13 @@ function Request({ detail }) {
   };
   const handleClose = () => setOpen(false);
 
-  const countDeliveriesByStatus = (rows, status) => {
-    // Filter the rows by status first
-    const filteredRows = rows.filter((row) => row.status === status);
+  const countDeliveriesByStatus = (data, status) => {
+    // Filter the data by status first
+    const filteredRows = data.filter((row) => row.status === status);
 
     const currentTotal = filteredRows.length;
 
-    // Filter the rows to get those created in the current month
+    // Filter the data to get those created in the current month
     const currentDate = new Date();
     const currentMonthRows = filteredRows.filter((row) => {
       const createdDate = new Date(row.created_at);
@@ -130,7 +130,7 @@ function Request({ detail }) {
       );
     });
 
-    // Filter the rows to get those created in the previous month
+    // Filter the data to get those created in the previous month
     const previousMonthRows = filteredRows.filter((row) => {
       const createdDate = new Date(row.created_at);
       const previousMonthDate = new Date(
@@ -164,11 +164,11 @@ function Request({ detail }) {
     return { total: currentTotal, percentChange, status: resultStatus };
   };
 
-  const countTotalDeliveries = (rows) => {
-    const currentTotal = rows.length;
+  const countTotalDeliveries = (data) => {
+    const currentTotal = data.length;
 
-    // Filter the rows to get those created in the current month
-    const currentMonthRows = rows.filter((row) => {
+    // Filter the data to get those created in the current month
+    const currentMonthRows = data.filter((row) => {
       const createdDate = new Date(row.created_at);
       const currentDate = new Date();
       return (
@@ -177,8 +177,8 @@ function Request({ detail }) {
       );
     });
 
-    // Filter the rows to get those created in the previous month
-    const previousMonthRows = rows.filter((row) => {
+    // Filter the data to get those created in the previous month
+    const previousMonthRows = data.filter((row) => {
       const createdDate = new Date(row.created_at);
       const currentDate = new Date();
       const previousMonthDate = new Date(
@@ -464,15 +464,15 @@ function Request({ detail }) {
               <div className={classes.info}>
                 <Typography variant="body1">Total Deleveries</Typography>
                 <Typography variant="h1">
-                  {countTotalDeliveries(rows)?.total}
+                  {countTotalDeliveries(data)?.total}
                 </Typography>
                 <Typography variant="body1" style={{ textAlign: "center" }}>
-                  {countTotalDeliveries(rows)?.status === "up" ? (
+                  {countTotalDeliveries(data)?.status === "up" ? (
                     <span style={{ color: "#00AC4F", fontWeight: 700 }}>
                       {" "}
                       <>
                         <ArrowUpward />{" "}
-                        {countTotalDeliveries(rows)?.percentChange}%{" "}
+                        {countTotalDeliveries(data)?.percentChange}%{" "}
                       </>
                       this month
                     </span>
@@ -481,7 +481,7 @@ function Request({ detail }) {
                       {" "}
                       <>
                         <ArrowDownward />{" "}
-                        {countTotalDeliveries(rows)?.percentChange}%{" "}
+                        {countTotalDeliveries(data)?.percentChange}%{" "}
                       </>
                       this month
                     </span>
@@ -504,15 +504,15 @@ function Request({ detail }) {
               <div className={classes.info}>
                 <Typography variant="body1">Pending Deliveries</Typography>
                 <Typography variant="h1">
-                  {countDeliveriesByStatus(rows, "ready").total}
+                  {countDeliveriesByStatus(data, "ready").total}
                 </Typography>
                 <Typography variant="body1">
-                  {countDeliveriesByStatus(rows, "ready")?.status === "up" ? (
+                  {countDeliveriesByStatus(data, "ready")?.status === "up" ? (
                     <span style={{ color: "#00AC4F", fontWeight: 700 }}>
                       {" "}
                       <>
                         <ArrowUpward />{" "}
-                        {countDeliveriesByStatus(rows, "ready")?.percentChange}%{" "}
+                        {countDeliveriesByStatus(data, "ready")?.percentChange}%{" "}
                       </>
                       this month
                     </span>
@@ -521,7 +521,7 @@ function Request({ detail }) {
                       {" "}
                       <>
                         <ArrowDownward />{" "}
-                        {countDeliveriesByStatus(rows, "ready")?.percentChange}%{" "}
+                        {countDeliveriesByStatus(data, "ready")?.percentChange}%{" "}
                       </>
                       this month
                     </span>
@@ -544,17 +544,17 @@ function Request({ detail }) {
               <div className={classes.info}>
                 <Typography variant="body1">Completed Deliveries</Typography>
                 <Typography variant="h1">
-                  {countDeliveriesByStatus(rows, "delivered").total}
+                  {countDeliveriesByStatus(data, "delivered").total}
                 </Typography>
                 <Typography variant="body1">
-                  {countDeliveriesByStatus(rows, "delivered")?.status ===
+                  {countDeliveriesByStatus(data, "delivered")?.status ===
                   "up" ? (
                     <span style={{ color: "#00AC4F", fontWeight: 700 }}>
                       {" "}
                       <>
                         <ArrowUpward />{" "}
                         {
-                          countDeliveriesByStatus(rows, "delivered")
+                          countDeliveriesByStatus(data, "delivered")
                             ?.percentChange
                         }
                         %{" "}
@@ -567,7 +567,7 @@ function Request({ detail }) {
                       <>
                         <ArrowDownward />{" "}
                         {
-                          countDeliveriesByStatus(rows, "delivered")
+                          countDeliveriesByStatus(data, "delivered")
                             ?.percentChange
                         }
                         %{" "}

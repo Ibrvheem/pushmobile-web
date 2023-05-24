@@ -88,11 +88,11 @@ function Layout({ children }) {
       Icon: <VerifiedUserTwoTone color="primary" />,
       Path: "/users",
     },
-    {
-      Text: "Agents",
-      Icon: <VerifiedUserTwoTone color="primary" />,
-      Path: "/agents",
-    },
+    // {
+    //   Text: "Agents",
+    //   Icon: <VerifiedUserTwoTone color="primary" />,
+    //   Path: "/agents",
+    // },
     {
       Text: "Requests",
       Icon: <TableChartOutlined color="primary" />,

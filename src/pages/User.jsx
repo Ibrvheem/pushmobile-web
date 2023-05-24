@@ -16,6 +16,14 @@ import { borderRadius, width } from "@mui/system";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useState, useEffect } from "react";
 
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+
 const useStyles = makeStyles((theme) => {
   return {
     users: {
@@ -66,7 +74,10 @@ const useStyles = makeStyles((theme) => {
 function User() {
   const classes = useStyles();
   const [rows, setRows] = useState([]);
+  const [data, setData] = useState([])
   const user = JSON.parse(localStorage.getItem("user"));
+
+  const [searchTerm, setSearchTerm] = useState('')
 
   // const getTotalUsers = (data)=>{
   //   // data = [{"address": "U/Dosa Kaduna","bus_stop": "SMC","created_at": "2023-04-30T21:23:14.456268","id": 9,"name": "Jamilu","phone_number": "+2348028752833","updated_at": "2023-04-30T21:26:33.212878"}]
@@ -141,8 +152,14 @@ function User() {
       },
     })
       .then((res) => res.json())
-      .then((data) => setRows(data));
+      .then((data) => {setRows(data); setData(data)});
   }, []);
+
+  useEffect(()=>{
+
+    setRows(data.filter(d=>d.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) || d.address?.toLowerCase()?.includes(searchTerm.toLowerCase()) || d.phone_number?.toLowerCase()?.includes(searchTerm.toLowerCase())))
+
+  }, [searchTerm])
 
   const columns = [
     // { field: "id", headerName: "ID", width: 200 },
@@ -176,13 +193,13 @@ function User() {
             </div>
             <div className={classes.info}>
               <Typography variant="body1">Total Users</Typography>
-              <Typography variant="h1">{getTotalUsers(rows).total}</Typography>
+              <Typography variant="h1">{getTotalUsers(data).total}</Typography>
               <Typography variant="body1" style={{ textAlign: "center" }}>
-                {getTotalUsers(rows).changeStatus === "up" ? (
+                {getTotalUsers(data).changeStatus === "up" ? (
                   <span style={{ color: "#00AC4F", fontWeight: 700 }}>
                     {" "}
                     <>
-                      <ArrowUpward /> {getTotalUsers(rows).percentageChange}%{" "}
+                      <ArrowUpward /> {getTotalUsers(data).percentageChange}%{" "}
                       this month
                     </>
                   </span>
@@ -190,7 +207,7 @@ function User() {
                   <span style={{ color: "#DF0404", fontWeight: 700 }}>
                     {" "}
                     <>
-                      <ArrowDownward /> {getTotalUsers(rows).percentageChange}%{" "}
+                      <ArrowDownward /> {getTotalUsers(data).percentageChange}%{" "}
                       this month
                     </>
                   </span>
@@ -213,14 +230,14 @@ function User() {
             <div className={classes.info}>
               <Typography variant="body1">New Users</Typography>
               <Typography variant="h1">
-                {getCurrentUsers(rows).total}
+                {getCurrentUsers(data).total}
               </Typography>
               <Typography variant="body1" style={{ textAlign: "center" }}>
-                {getCurrentUsers(rows).changeStatus === "up" ? (
+                {getCurrentUsers(data).changeStatus === "up" ? (
                   <span style={{ color: "#00AC4F", fontWeight: 700 }}>
                     {" "}
                     <>
-                      <ArrowUpward /> {getCurrentUsers(rows).percentageChange}%{" "}
+                      <ArrowUpward /> {getCurrentUsers(data).percentageChange}%{" "}
                       this month
                     </>
                   </span>
@@ -228,7 +245,7 @@ function User() {
                   <span style={{ color: "#DF0404", fontWeight: 700 }}>
                     {" "}
                     <>
-                      <ArrowDownward /> {getCurrentUsers(rows).percentageChange}
+                      <ArrowDownward /> {getCurrentUsers(data).percentageChange}
                       % this month
                     </>
                   </span>
@@ -238,11 +255,10 @@ function User() {
           </div>
         </Card>
         <Card className={classes.overviewCard}>
-          <div style={{ height: "auto", width: "100%" }}>
             <Container>
               <div className={classes.tableHeader}>
                 <Typography variant="h2">All Users</Typography>
-                <TextField
+                {/* <TextField
                   variant="outlined"
                   placeholder="Search"
                   InputProps={{
@@ -255,9 +271,25 @@ function User() {
                       </InputAdornment>
                     ),
                   }}
-                />
+                /> */}
+                <TextField
+          variant="outlined"
+          placeholder="Search"
+          value={searchTerm}
+          onChange={(e)=>{setSearchTerm(e.target.value)}}
+          InputProps={{
+            style: {
+              borderRadius: "3rem",
+            },
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchRounded style={{ fontSize: "2rem" }} />
+              </InputAdornment>
+            ),
+          }}
+        />
               </div>
-              <DataGrid
+              {/* <DataGrid
                 rows={rows}
                 columns={columns}
                 style={{ fontSize: "2rem", padding: "0rem 3rem" }}
@@ -267,9 +299,39 @@ function User() {
                   },
                 }}
                 pageSizeOptions={[5, 20]}
-              />
+              /> */}
+              <TableContainer component={Paper}>
+    <div className={classes.tableHeader}>
+        {/* <Typography variant="h2">All Requests</Typography> */}
+        
+      </div>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Timestamp</TableCell>
+            <TableCell align="right">Name</TableCell>
+            <TableCell align="right">Phone</TableCell>
+            <TableCell align="right">Address</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => (
+            <TableRow
+              key={row.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                {row.created_at}
+              </TableCell>
+              <TableCell align="right">{row.name}</TableCell>
+              <TableCell align="right">{row.phone_number}</TableCell>
+              <TableCell align="right">{row.address}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
             </Container>
-          </div>
         </Card>
       </Container>
     </div>
